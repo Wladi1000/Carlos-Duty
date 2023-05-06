@@ -97,49 +97,62 @@ window.onload = () => {
     };
 
   });
+  
+    function oMousePos(canvas, evt) {
+      var ClientRect = canvas.getBoundingClientRect();
+      return { //objeto
+        x: Math.round(evt.clientX - ClientRect.left),
+        y: Math.round(evt.clientY - ClientRect.top)
+      }
+    };
 
-  const animate = () => {
+  canvas.addEventListener("mousemove", function(evt) {
+    var mousePos = oMousePos(canvas, evt);
+    console.log( mousePos );
+  }, false);
 
-    c.beginPath();
-    c.fillStyle = 'black';
-    c.fillRect(0, 0, canvas.width, canvas.height);
-    c.fill();
+    const animate = () => {
 
-    if (player.velocity.yMovement < 0) player.velocity.yMovement += player.stopForce;
+      c.beginPath();
+      c.fillStyle = 'black';
+      c.fillRect(0, 0, canvas.width, canvas.height);
+      c.fill();
 
-    if (player.movingUp)
-      player.velocity.yMovement += player.isRunning ? -player.movementRun : -player.movementWalk;
-    player.checkVelocity();
+      if (player.velocity.yMovement < 0) player.velocity.yMovement += player.stopForce;
 
-    if (player.velocity.xMovement > 0) player.velocity.xMovement -= player.stopForce;
+      if (player.movingUp)
+        player.velocity.yMovement += player.isRunning ? -player.movementRun : -player.movementWalk;
+      player.checkVelocity();
 
-    if (player.movingRight) {
-      player.velocity.xMovement += player.isRunning ? player.movementRun : player.movementWalk;
-    }
+      if (player.velocity.xMovement > 0) player.velocity.xMovement -= player.stopForce;
 
-    if (player.velocity.yMovement > 0) player.velocity.yMovement -= player.stopForce;
+      if (player.movingRight) {
+        player.velocity.xMovement += player.isRunning ? player.movementRun : player.movementWalk;
+      }
 
-    if (player.movingDown)
-      player.velocity.yMovement += player.isRunning ? player.movementRun : player.movementWalk;
-    player.checkVelocity();
+      if (player.velocity.yMovement > 0) player.velocity.yMovement -= player.stopForce;
 
-    if (player.velocity.xMovement < 0) player.velocity.xMovement += player.stopForce;
+      if (player.movingDown)
+        player.velocity.yMovement += player.isRunning ? player.movementRun : player.movementWalk;
+      player.checkVelocity();
 
-    if (player.movingLeft)
-      player.velocity.xMovement -= player.isRunning ? player.movementRun : player.movementWalk;
-    player.checkVelocity();
+      if (player.velocity.xMovement < 0) player.velocity.xMovement += player.stopForce;
 
-    player.checkVelocity();
+      if (player.movingLeft)
+        player.velocity.xMovement -= player.isRunning ? player.movementRun : player.movementWalk;
+      player.checkVelocity();
 
-    player.update(c);
+      player.checkVelocity();
 
-    // c.clearRect(player.position.x, player.position.y, player.width, player.height);
-    // c.clearRect(player.position.x, player.position.y, player.width, player.height);
+      player.update(c);
 
-    window.requestAnimationFrame(animate);
+      // c.clearRect(player.position.x, player.position.y, player.width, player.height);
+      // c.clearRect(player.position.x, player.position.y, player.width, player.height);
+
+      window.requestAnimationFrame(animate);
+    };
+    animate();
+
+    drawHUD();
+    console.log('Caja de arena iniciada');
   };
-  animate();
-
-  drawHUD();
-  console.log('Caja de arena iniciada');
-};
