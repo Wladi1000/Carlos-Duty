@@ -80,7 +80,6 @@ window.onload = () => {
   });
 
   window.addEventListener('keyup', e => {
-
     switch (true) {
       case e.key.toUpperCase() === 'W':
         player.movingUp = false;
@@ -97,62 +96,137 @@ window.onload = () => {
     };
 
   });
-  
-    function oMousePos(canvas, evt) {
-      var ClientRect = canvas.getBoundingClientRect();
-      return { //objeto
-        x: Math.round(evt.clientX - ClientRect.left),
-        y: Math.round(evt.clientY - ClientRect.top)
-      }
-    };
 
-  canvas.addEventListener("mousemove", function(evt) {
-    var mousePos = oMousePos(canvas, evt);
-    console.log( mousePos );
+  function oMousePos(canvas, evt) {
+    var ClientRect = canvas.getBoundingClientRect();
+    return { //objeto
+      x: Math.round(evt.clientX - ClientRect.left),
+      y: Math.round(evt.clientY - ClientRect.top)
+    }
+  };
+
+  function getDistance(x1, y1, x2, y2) {
+
+    xDistance = x2 - x1;
+    yDistance = y2 - y1;
+
+    return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+  };
+
+  function setShotVelocity(percent, xNotion, yNotion) {
+    let proyectileMovement = { xMovement: undefined, yMovement: undefined };
+
+    proyectileMovement.xMovement = 20 * (percent / 100) * xNotion;
+    proyectileMovement.yMovement = 20 * (1 - percent / 100) * yNotion;
+
+    return proyectileMovement;
+  };
+
+  canvas.addEventListener("click", function (evt) {
+    let mousePos = oMousePos(canvas, evt);
+
+    let hipotenusa = getDistance(player.position.x, player.position.y, mousePos.x, mousePos.y);
+    let catetoOpuesto = getDistance(player.position.x, player.position.y, mousePos.x, player.position.y);
+
+    let angleRadianes = Math.asin(catetoOpuesto / hipotenusa);
+    let angle = (angleRadianes * 90) / (Math.PI / 2);
+
+    let percent = (angle * 100) / 90;
+    let proyectileMovement;
+
+    switch (true) {
+      // Sector 3
+      case (player.position.x >= mousePos.x && player.position.y <= mousePos.y):
+        proyectileMovement = setShotVelocity(percent, -1, 1);
+        break;
+
+      // Sector 4
+      case (player.position.x <= mousePos.x && player.position.y <= mousePos.y):
+        proyectileMovement = setShotVelocity(percent, 1, 1);
+        break;
+
+      // Sector 1
+      case (player.position.x <= mousePos.x && player.position.y >= mousePos.y):
+        proyectileMovement = setShotVelocity(percent, 1, -1);
+        break;
+
+      // Sector 2
+      case (player.position.x >= mousePos.x && player.position.y >= mousePos.y):
+        proyectileMovement = setShotVelocity(percent, -1, -1);
+        break;
+
+    };
+    pistol.shot(
+      { x: player.position.x, y: player.position.y },
+      proyectileMovement,
+      pistol.damage
+    );
+
   }, false);
 
-    const animate = () => {
+  const animate = () => {
 
-      c.beginPath();
-      c.fillStyle = 'black';
-      c.fillRect(0, 0, canvas.width, canvas.height);
-      c.fill();
+    c.beginPath();
+    c.fillStyle = 'black';
+    c.fillRect(0, 0, canvas.width, canvas.height);
+    c.fill();
 
-      if (player.velocity.yMovement < 0) player.velocity.yMovement += player.stopForce;
+    // ---------------------------------
+    // Jugador
+    // ---------------------------------
+    if (player.velocity.yMovement < 0) player.velocity.yMovement += player.stopForce;
 
-      if (player.movingUp)
-        player.velocity.yMovement += player.isRunning ? -player.movementRun : -player.movementWalk;
-      player.checkVelocity();
+    if (player.movingUp)
+      player.velocity.yMovement += player.isRunning ? -player.movementRun : -player.movementWalk;
+    player.checkVelocity();
 
-      if (player.velocity.xMovement > 0) player.velocity.xMovement -= player.stopForce;
+    if (player.velocity.xMovement > 0) player.velocity.xMovement -= player.stopForce;
 
-      if (player.movingRight) {
-        player.velocity.xMovement += player.isRunning ? player.movementRun : player.movementWalk;
-      }
+    if (player.movingRight) {
+      player.velocity.xMovement += player.isRunning ? player.movementRun : player.movementWalk;
+    }
 
-      if (player.velocity.yMovement > 0) player.velocity.yMovement -= player.stopForce;
+    if (player.velocity.yMovement > 0) player.velocity.yMovement -= player.stopForce;
 
-      if (player.movingDown)
-        player.velocity.yMovement += player.isRunning ? player.movementRun : player.movementWalk;
-      player.checkVelocity();
+    if (player.movingDown)
+      player.velocity.yMovement += player.isRunning ? player.movementRun : player.movementWalk;
+    player.checkVelocity();
 
-      if (player.velocity.xMovement < 0) player.velocity.xMovement += player.stopForce;
+    if (player.velocity.xMovement < 0) player.velocity.xMovement += player.stopForce;
 
-      if (player.movingLeft)
-        player.velocity.xMovement -= player.isRunning ? player.movementRun : player.movementWalk;
-      player.checkVelocity();
+    if (player.movingLeft)
+      player.velocity.xMovement -= player.isRunning ? player.movementRun : player.movementWalk;
+    player.checkVelocity();
 
-      player.checkVelocity();
+    player.checkVelocity();
 
-      player.update(c);
+    player.update(c);
 
-      // c.clearRect(player.position.x, player.position.y, player.width, player.height);
-      // c.clearRect(player.position.x, player.position.y, player.width, player.height);
+    // ---------------------------------
+    // Proyectiles
+    // ---------------------------------
 
-      window.requestAnimationFrame(animate);
-    };
-    animate();
+    pistol.proyectiles.forEach(e => {
+      if (
+        e.position.x >= canvas.width ||
+        e.position.y >= canvas.height ||
+        e.position.x <= (- e.width) ||
+        e.position.y <= (- e.height)
+      ) {
+        e.status = false;
+      } else
+        e.update(c);
+    });
 
-    drawHUD();
-    console.log('Caja de arena iniciada');
+    pistol.proyectiles = pistol.proyectiles.filter(t => t.status);
+
+    // c.clearRect(player.position.x, player.position.y, player.width, player.height);
+    // c.clearRect(player.position.x, player.position.y, player.width, player.height);
+
+    window.requestAnimationFrame(animate);
   };
+  animate();
+
+  drawHUD();
+  console.log('Caja de arena iniciada');
+};
