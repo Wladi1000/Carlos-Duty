@@ -157,7 +157,7 @@ window.onload = () => {
 
     };
     pistol.shot(
-      { x: player.position.x, y: player.position.y },
+      { x: player.position.x + (player.width / 2 - 10), y: player.position.y + (player.height / 2 - 10) },
       proyectileMovement,
       pistol.damage
     );
