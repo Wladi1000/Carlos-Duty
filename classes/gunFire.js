@@ -29,6 +29,7 @@ class WeponFire extends Wepon{
     this.munitionCapacity = munitionCapacity;
     this.shotCost = shotCost;
     this.reloadDelay = reloadDelay;
+    this.proyectiles = [];
   };
 
   levelUp(damagePlus, chargerCapacityPlus, munitionCapacityPlus){
@@ -73,10 +74,23 @@ class WeponFire extends Wepon{
     }
 
     return;
-  }
+  };
 
-  shot(){
+  addProyectile(proyectile){
+    this.proyectiles.push(proyectile);
+    return;
+  };
+
+  shot(position, proyectileVelocity, damage){
     this.charger -= this.shotCost;
+
+    this.addProyectile( new Proyectile(
+      position,
+      proyectileVelocity,
+      20,
+      20,
+      damage
+    ));
 
     if ( this.charger <= 0){
       this.charger = 0;
@@ -91,5 +105,5 @@ class WeponFire extends Wepon{
     this.munition = this.munitionCapacity;
     
     return;
-  }
+  };
 }
