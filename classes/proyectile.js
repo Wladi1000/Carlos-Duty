@@ -2,14 +2,12 @@ class Proyectile {
   constructor(
     position,
     velocity,
-    width,
-    height,
+    radius,
     damage
   ){
     this.position = position;
     this.velocity = velocity;
-    this.width = width;
-    this.height = height;
+    this.radius = radius;
     this.damage = damage;
     this.status = true;
   };
@@ -25,7 +23,7 @@ class Proyectile {
 
     c.beginPath();
     c.fillStyle = 'yellow';
-    c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
     c.fill();
   };
 }

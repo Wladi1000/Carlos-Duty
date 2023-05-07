@@ -14,7 +14,7 @@ class Player {
     this.isMovingDown = false;
     this.isMovingLeft = false;
 
-    this.height = 150;
+    this.height = 50;
     this.width = 50;
 
     this.movementWalk = 5;

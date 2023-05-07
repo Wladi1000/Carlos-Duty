@@ -87,8 +87,7 @@ class WeponFire extends Wepon{
     this.addProyectile( new Proyectile(
       position,
       proyectileVelocity,
-      20,
-      20,
+      10,
       damage
     ));
 
