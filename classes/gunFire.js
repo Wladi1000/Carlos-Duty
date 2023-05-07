@@ -1,6 +1,6 @@
 // import Wepon from "./wepon";
 
-class WeponFire extends Wepon{
+class WeponFire extends Wepon {
   constructor(
     id,
     name,
@@ -13,7 +13,7 @@ class WeponFire extends Wepon{
     munitionCapacity,
     shotCost,
     reloadDelay
-  ){
+  ) {
     super(
       id,
       name,
@@ -32,7 +32,7 @@ class WeponFire extends Wepon{
     this.proyectiles = [];
   };
 
-  levelUp(damagePlus, chargerCapacityPlus, munitionCapacityPlus){
+  levelUp(damagePlus, chargerCapacityPlus, munitionCapacityPlus) {
     super.levelUp(damagePlus);
 
     // More munition capacity
@@ -42,13 +42,13 @@ class WeponFire extends Wepon{
     // Refill munition
     this.charger = this.chargerCapacity;
     this.munition = this.munitionCapacity;
-    
+
     return;
   };
 
-  reload(){
-    if ( this.charger === 0 ){
-      if (this.munition <= this.chargerCapacity){
+  reload() {
+    if (this.charger === 0) {
+      if (this.munition <= this.chargerCapacity) {
         this.charger = this.munition;
         this.munition = 0;
 
@@ -58,15 +58,15 @@ class WeponFire extends Wepon{
       this.charger = this.chargerCapacity;
       this.munition -= this.chargerCapacity;
 
-    } else if ( this.charger < this.chargerCapacity ){
+    } else if (this.charger < this.chargerCapacity) {
 
-      if ( this.munition <= this.chargerCapacity - this.charger ){
+      if (this.munition <= this.chargerCapacity - this.charger) {
         this.charger += this.munition;
         this.munition = 0;
 
         return;
       }
-      
+
       this.munition -= (this.chargerCapacity - this.charger);
       this.charger = this.chargerCapacity;
 
@@ -76,33 +76,37 @@ class WeponFire extends Wepon{
     return;
   };
 
-  addProyectile(proyectile){
+  addProyectile(proyectile) {
     this.proyectiles.push(proyectile);
     return;
   };
 
-  shot(position, proyectileVelocity, damage){
-    this.charger -= this.shotCost;
+  shot(position, proyectileVelocity, damage) {
+    
+    if ( this.charger > 0 ){
+      this.charger -= this.shotCost;
+  
+      this.addProyectile(new Proyectile(
+        position,
+        proyectileVelocity,
+        10,
+        damage
+      ));
+    }
 
-    this.addProyectile( new Proyectile(
-      position,
-      proyectileVelocity,
-      10,
-      damage
-    ));
-
-    if ( this.charger <= 0){
+    if (this.charger <= 0) {
       this.charger = 0;
 
-      setTimeout(this.reload(), this.reloadDelay);
+    //   setTimeout(this.reload(), this.reloadDelay);
     };
 
     return;
   };
 
-  refillMunition(){
-    this.munition = this.munitionCapacity;
-    
+  refillMunition() {
+    if (this.munition < this.munitionCapacity)
+      this.munition = this.munitionCapacity;
+
     return;
   };
 }

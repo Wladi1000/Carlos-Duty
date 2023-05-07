@@ -32,6 +32,8 @@ class Player {
     this.color = color;
     this.healt = 100;
     this.death = false;
+
+    this.wepons = [];
   };
 
   checkVelocity() {
