@@ -18,7 +18,7 @@ class Player {
     this.width = 50;
 
     this.movementWalk = 5;
-    this.movementRun = 12;
+    this.movementRun = 10;
 
     this.stopForce = 1;
 
@@ -41,11 +41,15 @@ class Player {
       if (this.velocity.xMovement > this.movementRun) {
         this.velocity.xMovement = this.movementRun;
       };
-
+      if (this.velocity.xMovement < -this.movementRun) {
+        this.velocity.xMovement = -this.movementRun;
+      };
       if (this.velocity.yMovement > this.movementRun) {
         this.velocity.yMovement = this.movementRun;
       };
-
+      if (this.velocity.yMovement < -this.movementRun) {
+        this.velocity.yMovement = -this.movementRun;
+      };
     } else {
       if (this.velocity.xMovement > this.movementWalk) {
         this.velocity.xMovement = this.movementWalk;

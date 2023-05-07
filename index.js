@@ -25,9 +25,9 @@ window.onload = () => {
   const drawHUD = () => {
 
     console.clear();
-    player.wepons.forEach(t =>{
+    player.wepons.forEach(t => {
 
-      if ( t instanceof WeponFire ){
+      if (t instanceof WeponFire) {
         console.log(
           `
             Gun: ${t.name}
@@ -36,7 +36,7 @@ window.onload = () => {
             municion ${t.munition} / ${t.munitionCapacity}
           `
         );
-      } else{
+      } else
         console.log(
           `
             Melee Wepon: ${t.name}
@@ -44,7 +44,6 @@ window.onload = () => {
             durabilidad: ${t.status} / ${t.durability}
           `
         );
-      }
 
     });
 
@@ -78,45 +77,45 @@ window.onload = () => {
 
   canvas.addEventListener("click", (evt) => {
 
-    if (player.wepons.length !== 0){
+    if (player.wepons.length !== 0) {
       let mousePos = oMousePos(canvas, evt);
-  
+
       let hipotenusa = getDistance(player.position.x + (player.width / 2), player.position.y + (player.height / 2), mousePos.x, mousePos.y);
       let catetoOpuesto = getDistance(player.position.x + (player.width / 2), player.position.y + (player.height / 2), mousePos.x, player.position.y + (player.height / 2));
-  
+
       let angleRadianes = Math.asin(catetoOpuesto / hipotenusa);
       let angle = (angleRadianes * 90) / (Math.PI / 2);
-  
+
       let percent = (angle * 100) / 90;
       let proyectileMovement;
-  
+
       switch (true) {
         // Sector 3
         case (player.position.x + (player.width / 2) >= mousePos.x && player.position.y + (player.height / 2) <= mousePos.y):
           proyectileMovement = setShotVelocity(percent, -1, 1);
           break;
-  
+
         // Sector 4
         case (player.position.x + (player.width / 2) <= mousePos.x && player.position.y + (player.height / 2) <= mousePos.y):
           proyectileMovement = setShotVelocity(percent, 1, 1);
           break;
-  
+
         // Sector 1
         case (player.position.x + (player.width / 2) <= mousePos.x && player.position.y + (player.height / 2) >= mousePos.y):
           proyectileMovement = setShotVelocity(percent, 1, -1);
           break;
-  
+
         // Sector 2
         case (player.position.x + (player.width / 2) >= mousePos.x && player.position.y + (player.height / 2) >= mousePos.y):
           proyectileMovement = setShotVelocity(percent, -1, -1);
           break;
-  
+
       };
-  
-  
+
+
       console.log(`esto es melee?: ${knife instanceof WeponMelee}`);
       console.log(`esto es fire?: ${knife instanceof WeponFire}`);
-  
+
       player.wepons[weponsIndex] instanceof WeponFire ?
         player.wepons[weponsIndex].shot(
           { x: player.position.x + (player.width / 2), y: player.position.y + (player.height / 2) },
@@ -124,7 +123,7 @@ window.onload = () => {
           pistol.damage
         ) :
         player.wepons[weponsIndex].attack(true);
-    } else{
+    } else {
       alert(`
         Usted no tiene armas para usar.
         Consigue una rapido!
@@ -154,6 +153,10 @@ window.onload = () => {
       case e.key.toUpperCase() === 'A':
         player.movingLeft = true;
         break;
+      // Running move
+      case e.key.toUpperCase() === 'SHIFT':
+        player.isRunning = true;
+        break;
       // Change wepon
       case e.key.toUpperCase() === 'Q':
         weponsIndex = weponsIndex === 0 ? 1 : 0;
@@ -175,12 +178,13 @@ window.onload = () => {
         break;
       // Drop wepon selected
       case e.key.toUpperCase() === 'E':
-        weponsIndex === 1? 
+        weponsIndex === 1 ?
           player.wepons.pop() :
           player.wepons.shift();
         weponsIndex = 0;
         break;
     };
+    console.log(e.key.toLocaleUpperCase());
   });
 
   window.addEventListener('keyup', e => {
@@ -196,6 +200,10 @@ window.onload = () => {
         break;
       case e.key.toUpperCase() === 'A':
         player.movingLeft = false;
+        break;
+      // Running move
+      case e.key.toUpperCase() === 'SHIFT':
+        player.isRunning = false;
         break;
     };
 
@@ -260,10 +268,11 @@ window.onload = () => {
     // c.clearRect(player.position.x, player.position.y, player.width, player.height);
     // c.clearRect(player.position.x, player.position.y, player.width, player.height);
 
+    //drawHUD();
     window.requestAnimationFrame(animate);
   };
   animate();
-  
+
   drawHUD();
   console.log('Caja de arena iniciada');
 };
