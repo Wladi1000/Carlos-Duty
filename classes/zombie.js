@@ -1,4 +1,4 @@
-class Player {
+class Zombie {
   constructor(
     position,
     velocity = { xMovement: 0, yMovement: 0 },
@@ -16,9 +16,97 @@ class Player {
     this.movementRun = 12;
 
     this.isRunning = false;
+    this.isAttacking = false;
 
     this.color = color;
     this.healt = 100 * roundScale;
     this.death = false;
   };
+
+  checkVelocity() {
+    if (this.isRunning) {
+      if (this.velocity.xMovement > this.movementRun) {
+        this.velocity.xMovement = this.movementRun;
+      };
+      if (this.velocity.xMovement < -this.movementRun) {
+        this.velocity.xMovement = -this.movementRun;
+      };
+      if (this.velocity.yMovement > this.movementRun) {
+        this.velocity.yMovement = this.movementRun;
+      };
+      if (this.velocity.yMovement < -this.movementRun) {
+        this.velocity.yMovement = -this.movementRun;
+      };
+    } else {
+      if (this.velocity.xMovement > this.movementWalk) {
+        this.velocity.xMovement = this.movementWalk;
+      };
+      if (this.velocity.xMovement < -this.movementWalk) {
+        this.velocity.xMovement = -this.movementWalk;
+      };
+      if (this.velocity.yMovement > this.movementWalk) {
+        this.velocity.yMovement = this.movementWalk;
+      };
+      if (this.velocity.yMovement < -this.movementWalk) {
+        this.velocity.yMovement = -this.movementWalk;
+      };
+    }
+    return;
+  };
+
+  attack( hit ){
+
+    if (hit){
+      this.velocity.xMovement = 0;
+      this.velocity.xMovement = 0;
+    };
+  };
+
+  isMovingUp() {
+    if (this.velocity.yMovement < 0) this.velocity.yMovement += this.stopForce;
+
+    if (this.movingUp)
+      this.velocity.yMovement += this.isRunning ? -this.movementRun : -this.movementWalk;
+    this.checkVelocity();
+    
+  };
+
+  isMovingRight() {
+    console.log('moviendome');
+    if (this.velocity.xMovement > 0) this.velocity.xMovement -= this.stopForce;
+    
+    if (this.movingRight){
+      this.velocity.xMovement += this.isRunning ? this.movementRun : this.movementWalk;
+      console.log('moviendome');
+    }
+    this.checkVelocity();
+  };
+  isMovingDown() {
+    if (this.velocity.yMovement > 0) this.velocity.yMovement -= this.stopForce;
+
+    if (this.movingDown)
+      this.velocity.yMovement += this.isRunning ? this.movementRun : this.movementWalk;
+    this.checkVelocity();
+    
+  };
+  isMovingLeft() {
+    if (this.velocity.xMovement < 0) this.velocity.xMovement += this.stopForce;
+
+    if (this.movingLeft)
+      this.velocity.xMovement -= this.isRunning ? this.movementRun : this.movementWalk;
+    this.checkVelocity();
+    
+  };
+
+  update(c) {
+
+    this.position.x += this.velocity.xMovement;
+    this.position.y += this.velocity.yMovement;
+
+    c.beginPath();
+    c.fillStyle = 'blue';
+    c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    c.fill();
+  };
+
 };
