@@ -1,6 +1,7 @@
 // import WeponFire from "./classes/gunFire";
 window.onload = () => {
 
+  // Set canvas
   let canvas = document.getElementById('canvas');
   let c = canvas.getContext('2d');
 
@@ -9,18 +10,28 @@ window.onload = () => {
 
   c.fillRect(0, 0, canvas.width, canvas.height);
 
+  // Initial Wepons
   let pistol = new WeponFire(1, 'Pistol 1919', 1, 1, 1, [], 250, 8, 80, 1, 2000);
 
   let knife = new WeponMelee(11, 'Combat Knife', 3, 1, 1, [], 500, 5, 10);
 
+  // Wepons
   let starWepons = [pistol, knife];
   let weponsIndex = 0;
 
+  // Player 
   let player = new Player({ x: 200, y: 200 }, { xMovement: 0, yMovement: 0 }, 'red');
 
+  // Start Wepons
   starWepons.forEach(p => {
     player.wepons.push(p);
   });
+
+  // Camera
+  let cameraOffset = {
+    xPosition: 0,
+    yPosition: 0
+  };
 
   const drawHUD = () => {
 
